@@ -31,7 +31,8 @@ fac1 n = n * fac (n-1)
 fac2 :: Natural -> Natural 
 fac2 = foldr (*) 1 . enumFromTo 1
 
---On line 32 the function foldr takes each element of a list starting from the last one and then aplies the operation
+--On line 32 the function enumFromTo creates a list starting on 1 and going  
+--The function foldr takes each element of a list starting from the last one and then aplies the operation
 --that the argument indicates. 
 
 -------------------------------------------------------------------
@@ -70,8 +71,12 @@ instance Arbitrary Natural where
       arbitrary = arbitrarySizedNatural 
       shrink = shrinkIntegral
 
---prop_fac :: [Natural -> Natural] -> Natural -> Bool  
+prop_fac :: (Natural -> Natural) -> Natural -> Bool  
+prop_fac list n = list n == fac n
 
+f :: [Natural -> Natural] -> Natural -> Bool 
+f [] k = True 
+f (x:xs) k = prop_fac x k && f xs k
 
---main :: IO ()
---main = quickCheck $ prop_fac[fac1,fac2,fac3,fac4,fac5]
+main :: IO ()
+main = quickCheck $ f[fac1,fac2,fac3,fac4,fac5]
